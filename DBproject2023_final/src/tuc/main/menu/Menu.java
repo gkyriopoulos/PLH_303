@@ -42,7 +42,7 @@ public class Menu {
 	 * @return 1 if everything is OK.
 	 */
 	private int printMainMenu() {
-		System.out.println("\n*************** Welcome mister Kazasis ! ***************\n");
+		System.out.println("\n*************** Hello Mr.Kazasis uWu :3 ****************\n");
 		for(String option : mainMenuOptions) {
 			System.out.println(option);
 		}

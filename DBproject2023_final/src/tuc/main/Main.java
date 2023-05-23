@@ -9,7 +9,7 @@ import tuc.main.menu.Menu;
 
 public class Main {
 	
-	/**WARNING 0:
+	/* WARNING 0:
 	 * Some globals in order to be able to connect to the database,
 	 * you will most likely need to change these.
 	 */
@@ -17,18 +17,20 @@ public class Main {
     static String USERNAME = "postgres";
     static String PASSWORD = "1234";
     static String DATABASE_NAME = "DBproject2023_final";
-
     
-	/**
-	 * Main function.
-	 * WARNING 1:
+    /*
+     * WARNING 1:
 	 * In order to run the program successfully you need to link the JDBC library
 	 * to the project.
 	 * I have included the JDBC .jar in the project files.
 	 * 
-	 * WARNING 2: In order to be able to display Greek characters @ the console you have to follow this process:
+	 * WARNING 2: In order to be able to display Greek characters at the console you have to follow this process:
 	 * 1) Window > Preferences > General > Content Types.
 	 * 2) Set "UTF-8" as the default content type.
+     */
+    
+	/**
+	 * Main function it just prints the menu.
 	 * @param args
 	 */
     
@@ -46,7 +48,6 @@ public class Main {
             
             c.close();
             
-
         } catch (Exception e) {
         	exceptionHandler(e);
         }
@@ -61,7 +62,7 @@ public class Main {
     		System.out.println("\nError while retrieving data from the Database :( .");
     	}
     	else if( e instanceof InputMismatchException) {
-    		System.out.println("\nThe input can only be an int (1,2,3..). Please try again.");
+    		System.out.println("\nThe input can only be an int (1,2,3..).");
     	}else {
     		System.out.println("\nUnknow exception :( .");
     	}

@@ -21,7 +21,7 @@ public class Menu {
 	private static String[] mainMenuOptions = {"1) Retrive Student's Grade(AM , CourseCode).", 
 												"2) Alter Student's Grade(AM, CourseCode , SerialNumber).", 
 												"3) Find Person(Surname).", 
-												"4) Retrive Student's Grades(AM) - sorted", "5) Exit"};
+												"4) Retrive Student's Grades(AM) - sorted.", "5) Exit."};
 	
 	private Menu(){
 	}
@@ -83,7 +83,7 @@ public class Menu {
 				case 5:
 					break;
 				default:
-					System.out.println("Unexpected choice, please choose again.");
+					System.out.println("Unexpected choice. Try again.");
 					break;
 			}
 		 }
@@ -156,7 +156,7 @@ public class Menu {
         ResultSet rs = ps.executeQuery();
 		
         if(rs.next() == false) {
-			System.out.println("\nCouldn't find a (Student,Course) pair given the parameters entered.");
+			System.out.println("\nCouldn't find a (Student,Course) pair given the parameters entered. Try again.");
 	        ps.close();
 	        rs.close();
 			return 0;
@@ -234,7 +234,7 @@ public class Menu {
 	    int rs = ps.executeUpdate();
 	    
 	    if(rs == 0) {
-	    	System.out.println("\nUpdate failed.");
+	    	System.out.println("\nUpdate failed. Try again.");
 		   	ps.close();
 		   	return 0;
 	    }

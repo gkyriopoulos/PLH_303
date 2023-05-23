@@ -42,9 +42,11 @@ public class Menu {
 	 * @return 1 if everything is OK.
 	 */
 	private int printMainMenu() {
+		System.out.println("\n*************** Welcome mister Kazasis ! ***************\n");
 		for(String option : mainMenuOptions) {
 			System.out.println(option);
 		}
+		System.out.println("\n********************************************************");
 		return 1;
 	}
 	
@@ -61,8 +63,7 @@ public class Menu {
 		 int selected_option = 0;
 		 
 		 while(selected_option != EXIT_MENU) {
-			 
-			System.out.println("\n");
+			
 			printMainMenu();
 			selected_option = sc.nextInt();
 			
@@ -77,7 +78,6 @@ public class Menu {
 					thirdChoice(sc,c);
 					break;
 				case 4:
-					testChoice(c);
 					fourthChoice(sc,c);
 					break;
 				case 5:
@@ -88,7 +88,9 @@ public class Menu {
 			}
 		 }
 		
-		System.out.println("\nProgram exited successfully!");
+		System.out.println("Program exited successfully!");
+		System.out.println("\n********************************************************");
+
 		sc.close();
 		return 1;
 	}
@@ -173,6 +175,14 @@ public class Menu {
 		return 1;
 	}
 	
+	/**
+	 * Function for the second question of the exercise 
+	 * Some testing values are: (AM: '2010000001', CourseCode: 'ΑΓΓ 101', SerialNum : '1')
+	 * @param sc
+	 * @param c
+	 * @return
+	 * @throws SQLException
+	 */
 	//TODO: secondChoice
 	private int secondChoice(Scanner sc, Connection c) throws SQLException {
 		
@@ -240,12 +250,64 @@ public class Menu {
 	
 	//TODO: thirdChoice
 	private int thirdChoice(Scanner sc, Connection c) {
+		
 		return 1;
 	}
 	
+	/**
+	 * Function for the fourth question of the exercise.
+	 *Some testing values are: (AM: '2010000004')
+	 * @param sc
+	 * @param c
+	 * @return 1 or 0 everything else is NOT OK.
+	 * @throws SQLException
+	 */
 	//TODO: fourthChoice
-	private int fourthChoice(Scanner sc, Connection c) {
-		return 1;
+	private int fourthChoice(Scanner sc, Connection c) throws SQLException {
+		
+		System.out.println("\nEnter Student's AM: ");
+		String am = sc.next();
+		sc.nextLine();  // consume newline left-over
+		
+		if(!checkSize(am,AM_SIZE)) {
+			System.out.println("\nAM's size is wrong. Try again.");
+			return 0;
+		}
+		
+		String query = "SELECT serial_number, course_code, final_grade" + " "
+				+ "FROM public.\"Register\" WHERE amka = (" + " "
+				+ "SELECT amka" + " "
+				+ "FROM public.\"Student\"" + " "
+				+ "WHERE am = " + "\'" + am + "\'" + " "
+				+ ")" + " "
+				+ "ORDER BY serial_number;";
+		
+		System.out.println(query);
+		
+		PreparedStatement ps = c.prepareStatement(query);
+		ResultSet rs = ps.executeQuery();
+			
+	    if(rs.next() == false) {
+	    	System.out.println("\nCouldn't find Student in the Database.");
+		    ps.close();
+		    rs.close();
+			return 0;
+		}else {
+			do {
+				int serial_number = rs.getInt("serial_number");
+				String course_code = rs.getString("course_code");
+				String final_grade = rs.getString("final_grade");
+				
+				System.out.println("\nSemester's Serial Number: " + "\'" + serial_number + "\'" + 
+				"\nCourse Code: " + "\'" + course_code + "\'" 
+				+ "\nFinal Grade: " + "\'"+ final_grade + "\'");
+			}while(rs.next());
+		} 
+	        
+	    ps.close();
+	    rs.close();
+		
+	    return 1;
 	}
 	
 	private boolean checkSize(String test, int size) {

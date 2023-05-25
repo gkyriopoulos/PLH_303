@@ -25,8 +25,9 @@ public class Main {
 	 * I have included the JDBC .jar in the project files.
 	 * 
 	 * WARNING 2: In order to be able to display Greek characters at the console you have to follow this process:
-	 * 1) Window > Preferences > General > Content Types.
-	 * 2) Set "UTF-8" as the default content type.
+	 * 1) Window > Preferences > General > Content Types > Text.
+	 * 2) Set "UTF-8" as the Default Encoding.
+	 * 3)
      */
     
 	/**
@@ -52,7 +53,7 @@ public class Main {
         	exceptionHandler(e);
         }
     }
-    
+   
     /**
      * A simple Exception Handler.
      * @param e

@@ -17,6 +17,7 @@ public class Menu {
     private static int COURSE_CODE_SIZE = 7;
     private static int MAX_GRADE = 10;
     private static int MIN_GRADE = 0;
+    private static int MAX_REC_PER_PAGE = 5;
     
 	private static String[] mainMenuOptions = {"1) Retrive Student's Grade(AM , CourseCode).", 
 												"2) Alter Student's Grade(AM, CourseCode , SerialNumber).", 
@@ -83,6 +84,7 @@ public class Menu {
 				case 5:
 					break;
 				default:
+					testChoice(c);
 					System.out.println("Unexpected choice. Try again.");
 					break;
 			}
@@ -183,7 +185,6 @@ public class Menu {
 	 * @return
 	 * @throws SQLException
 	 */
-	//TODO: secondChoice
 	private int secondChoice(Scanner sc, Connection c) throws SQLException {
 		
 		System.out.println("\nEnter Student's AM: ");
@@ -232,13 +233,14 @@ public class Menu {
 		
 		PreparedStatement ps = c.prepareStatement(query);
 	    int rs = ps.executeUpdate();
-	    
+	   
 	    if(rs == 0) {
 	    	System.out.println("\nUpdate failed. Try again.");
 		   	ps.close();
 		   	return 0;
 	    }
 		
+	    
 	    System.out.println("\nChanged Student's " + "\'" + am + "\'" + " Grade at " 
 	    		+ "\'" + course_code + "\'" + " with Serial Number " + "\'" + serial_num + "\'"
 	    		+ " to " + "\'" +  grade + "\'");
@@ -249,7 +251,74 @@ public class Menu {
 	}
 	
 	//TODO: thirdChoice
-	private int thirdChoice(Scanner sc, Connection c) {
+	private int thirdChoice(Scanner sc, Connection c) throws SQLException {
+		
+		System.out.println("\nEnter Person's surname initials: ");
+		String initials = sc.next();
+		sc.nextLine();  // consume newline left-over
+		
+		int rs_size = 0;
+		int max_rec_per_page = 0;
+		int max_pages = 1;
+		int i = 0;
+		int n = 0;
+		
+		String query = "SELECT surname,name,amka,email FROM public.\"Person\"" + " "
+				+ "WHERE surname" + " "
+				+ "LIKE " + "\'" + initials + "%'" + " "
+				+ "ORDER BY surname;";
+		
+		PreparedStatement ps = c.prepareStatement(query,ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
+		ResultSet rs = ps.executeQuery();
+		
+		if (rs != null) 
+		{
+		  rs.last();   // move to the end
+		  rs_size = rs.getRow(); // get row
+		  rs.beforeFirst();; // move to the beginning
+		}
+		
+		if( rs_size > MAX_REC_PER_PAGE ) {
+			System.out.println("\nEnter number of recs per page: ");
+			max_rec_per_page = sc.nextInt();
+			max_pages = (int) Math.ceil(rs_size/max_rec_per_page) + 1;
+		}
+		
+		String[][] results = new String [max_pages][max_rec_per_page];
+		
+		if(rs.next() == false) {
+	    	System.out.println("\nNo Person matching the initials entered in the Database.");
+		    ps.close();
+		    rs.close();
+			return 0;
+		}else {
+			do {
+				
+				String surname = rs.getString("surname");
+				String name = rs.getString("name");
+				String amka = rs.getString("amka");
+				String email = rs.getString("email");
+				
+				results[i/max_rec_per_page][i%max_rec_per_page] = surname + " " + name + " " + amka + " " + email;
+				
+				i++;
+				
+			}while(rs.next());
+		} 
+		
+		System.out.println("\nMax number of pages: " + max_pages);
+		
+		do {
+			printPage(results,n);
+			System.out.println("\nEnter page(or n for next page): ");
+			String option = sc.next();
+			if(option == "n") {
+				n = n + 1;
+			}else {
+				n = Integer.parseInt(option);
+			}
+		}while(n <= max_pages);
+		
 		
 		return 1;
 	}
@@ -262,7 +331,6 @@ public class Menu {
 	 * @return 1 or 0 everything else is NOT OK.
 	 * @throws SQLException
 	 */
-	//TODO: fourthChoice
 	private int fourthChoice(Scanner sc, Connection c) throws SQLException {
 		
 		System.out.println("\nEnter Student's AM: ");
@@ -317,4 +385,21 @@ public class Menu {
 	private boolean checkRange(int i, int min, int max) {
 		return ( (i >= min) && ( i<= max ) ) ? true : false;
 	}
+	
+	private int printPage(String[][] results, int i) {
+		
+		if(i >= 0) {
+			for (String rec : results[i] ) {
+				System.out.println(rec);
+			}
+		}else {
+			System.out.println("Negative page index. Try again.");
+			return 0;
+		}
+		
+		return 1;
+	}
 }
+
+//TODO FIX 1 data format while printing
+//TODO FIX 4 according to email plus the data format while printing

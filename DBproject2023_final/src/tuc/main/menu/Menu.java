@@ -165,9 +165,9 @@ public class Menu {
 		}else {
 			do {
 				 int grade = rs.getInt("final_grade");
-		            System.out.println("\nAM: " + "\'" + am + "\'" + 
-		            		"\nCourse Code: " + "\'" + course_code + "\'" 
-		            		+ "\nFinal Grade: " + "\'"+ grade + "\'");
+		            System.out.println("\n"+ "'" + am + "'" + " "
+		            		+ "'" + course_code + "'" + " "
+		            		+ "'" + grade + "'");
 			}while(rs.next());
 		} 
         
@@ -306,18 +306,18 @@ public class Menu {
 			}while(rs.next());
 		} 
 		
-		System.out.println("\nMax number of pages: " + max_pages);
+		System.out.println("\nMax number of pages(0-indexed): " + max_pages);
 		
 		do {
 			printPage(results,n);
 			System.out.println("\nEnter page(or n for next page): ");
 			String option = sc.next();
-			if(option == "n") {
+			if(option.equals("n")) {
 				n = n + 1;
 			}else {
 				n = Integer.parseInt(option);
 			}
-		}while(n <= max_pages);
+		}while(n < max_pages);
 		
 		
 		return 1;
@@ -388,6 +388,8 @@ public class Menu {
 	
 	private int printPage(String[][] results, int i) {
 		
+		System.out.println("\n");
+		
 		if(i >= 0) {
 			for (String rec : results[i] ) {
 				System.out.println(rec);
@@ -401,5 +403,4 @@ public class Menu {
 	}
 }
 
-//TODO FIX 1 data format while printing
 //TODO FIX 4 according to email plus the data format while printing

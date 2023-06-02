@@ -41,7 +41,8 @@ public class Main {
             Class.forName("org.postgresql.Driver");
             Connection c = DriverManager.getConnection("jdbc:postgresql://localhost:5432/" + DATABASE_NAME , USERNAME, PASSWORD);
             if (c != null) {
-        		System.out.println("********************************************************\n");
+        		System.out.println("***************************************************************************************");
+
                 System.out.println("Connection with Database initialized successfully! :)");
             }
             

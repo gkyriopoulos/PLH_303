@@ -1,6 +1,5 @@
 package tuc.main.menu;
 
-import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -43,11 +42,11 @@ public class Menu {
 	 * @return 1 if everything is OK.
 	 */
 	private int printMainMenu() {
-		System.out.println("\n*************** Hello Mr.Kazasis uWu :3 ****************\n");
+		System.out.println("\n***************************************************************************************");
 		for(String option : mainMenuOptions) {
 			System.out.println(option);
 		}
-		System.out.println("\n********************************************************");
+		System.out.println("\n***************************************************************************************");
 		return 1;
 	}
 	
@@ -84,7 +83,6 @@ public class Menu {
 				case 5:
 					break;
 				default:
-					testChoice(c);
 					System.out.println("Unexpected choice. Try again.");
 					break;
 			}
@@ -97,29 +95,6 @@ public class Menu {
 		return 1;
 	}
 	
-	/**
-	 * A simple test choice. Will be deleted at a later stage.	
-	 * @param c
-	 * @return 1 if everything is OK.
-	 * @throws SQLException
-	 */
-	private int testChoice(Connection c) throws SQLException {
-
-        String test = "{call get_lab_staff_job_hours()}";
-        CallableStatement cs = c.prepareCall(test);
-        ResultSet rs = cs.executeQuery();
-
-        while (rs.next()) {
-            System.out.println(rs.getString("amka") + " " + rs.getString("name") 
-            		+ " " + rs.getString("surname")
-                    + " " + rs.getInt("job_hours"));
-        }
-        
-        cs.close();
-        rs.close();
-        
-		return 1;
-	}
 	
 	/**
 	 * Function for the first question of the exercise.
@@ -163,11 +138,10 @@ public class Menu {
 	        rs.close();
 			return 0;
 		}else {
+			System.out.printf("%-30.30s %-30.30s %-30.30s\n", "AM", "|Course Code", "|Final Grade");
 			do {
 				 int grade = rs.getInt("final_grade");
-		            System.out.println("\n"+ "'" + am + "'" + " "
-		            		+ "'" + course_code + "'" + " "
-		            		+ "'" + grade + "'");
+				 System.out.printf("%-30.30s %-30.30s %-30.30s\n", am, course_code, grade);
 			}while(rs.next());
 		} 
         
@@ -293,21 +267,21 @@ public class Menu {
 			return 0;
 		}else {
 			do {
-				
 				String surname = rs.getString("surname");
 				String name = rs.getString("name");
 				String amka = rs.getString("amka");
 				String email = rs.getString("email");
 				
-				results[i/max_rec_per_page][i%max_rec_per_page] = surname + " " + name + " " + amka + " " + email;
-				
+				results[i/max_rec_per_page][i%max_rec_per_page] = String.format("%-30.30s %-30.30s %-30.30s %-30.30s" 
+				,surname, name, amka, email);
+			
 				i++;
 				
 			}while(rs.next());
 		} 
 		
 		System.out.println("\nMax number of pages(0-indexed): " + max_pages);
-		
+		System.out.printf("%-30.30s %-30.30s %-30.30s %-30.30s\n", "Surname", "|Name", "|Amka", "|e-mail");
 		do {
 			printPage(results,n);
 			System.out.println("\nEnter page(or n for next page): ");
@@ -342,33 +316,30 @@ public class Menu {
 			return 0;
 		}
 		
-		String query = "SELECT serial_number, course_code, final_grade" + " "
-				+ "FROM public.\"Register\" WHERE amka = (" + " "
-				+ "SELECT amka" + " "
-				+ "FROM public.\"Student\"" + " "
-				+ "WHERE am = " + "\'" + am + "\'" + " "
-				+ ")" + " "
-				+ "ORDER BY serial_number;";
-		
-		System.out.println(query);
+		String query = "SELECT DISTINCT r.course_code, r.final_grade, c.typical_year" + " "
+				+ "FROM public.\"Register\" r" + " "
+				+ "JOIN public.\"Course\" c ON r.course_code = c.course_code" + " "
+				+ "WHERE r.amka = (" + " "
+				+ "SELECT amka FROM public.\"Student\" s" + " "
+				+ "WHERE am = " + "\'" + am + "\')" + " "
+				+ "order by c.typical_year";
 		
 		PreparedStatement ps = c.prepareStatement(query);
 		ResultSet rs = ps.executeQuery();
-			
+		
 	    if(rs.next() == false) {
 	    	System.out.println("\nCouldn't find Student in the Database.");
 		    ps.close();
 		    rs.close();
 			return 0;
 		}else {
+			System.out.printf("%-30.30s %-30.30s %-30.30s\n", "Typical Year", "|Course Code", "|Final Grade");
 			do {
-				int serial_number = rs.getInt("serial_number");
+				int typical_year = rs.getInt("typical_year");
 				String course_code = rs.getString("course_code");
 				String final_grade = rs.getString("final_grade");
-				
-				System.out.println("\nSemester's Serial Number: " + "\'" + serial_number + "\'" + 
-				"\nCourse Code: " + "\'" + course_code + "\'" 
-				+ "\nFinal Grade: " + "\'"+ final_grade + "\'");
+			 	
+				System.out.printf("%-30.30s %-30.30s %-30.30s\n", typical_year, course_code, final_grade);
 			}while(rs.next());
 		} 
 	        
@@ -388,11 +359,11 @@ public class Menu {
 	
 	private int printPage(String[][] results, int i) {
 		
-		System.out.println("\n");
-		
 		if(i >= 0) {
 			for (String rec : results[i] ) {
-				System.out.println(rec);
+				if (rec != null) {
+					System.out.println(rec);
+				}
 			}
 		}else {
 			System.out.println("Negative page index. Try again.");

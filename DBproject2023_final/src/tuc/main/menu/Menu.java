@@ -89,7 +89,7 @@ public class Menu {
 		 }
 		
 		System.out.println("Program exited successfully!");
-		System.out.println("\n********************************************************");
+		System.out.println("\n***************************************************************************************");
 
 		sc.close();
 		return 1;

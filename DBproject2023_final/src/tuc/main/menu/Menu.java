@@ -280,7 +280,7 @@ public class Menu {
 			}while(rs.next());
 		} 
 		
-		System.out.println("\nMax number of pages(0-indexed): " + max_pages);
+		System.out.println("\nMax number of pages: " + (max_pages -1) );
 		System.out.printf("%-30.30s %-30.30s %-30.30s %-30.30s\n", "Surname", "|Name", "|Amka", "|e-mail");
 		do {
 			printPage(results,n);
@@ -291,7 +291,7 @@ public class Menu {
 			}else {
 				n = Integer.parseInt(option);
 			}
-		}while(n < max_pages);
+		}while(n < max_pages - 1);
 		
 		
 		return 1;

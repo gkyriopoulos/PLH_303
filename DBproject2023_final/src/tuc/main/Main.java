@@ -43,7 +43,7 @@ public class Main {
             if (c != null) {
         		System.out.println("***************************************************************************************");
 
-                System.out.println("Connection with Database initialized successfully! :)");
+                System.out.println("Connection with Database initialized successfully!! :)");
             }
             
             Menu.getInstance().mainMenu(c);
